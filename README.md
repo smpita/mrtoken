@@ -11,7 +11,11 @@ To install, add the following to the composer.json file and then 'composer updat
         }
     ]
 
-To register, add the following line to the config/app.php file in the provider
-section.
+To register the service provider, add the following line to the config/app.php
+file in the provider section.
 
     Hackage\MrToken\MrTokenServiceProvider::class
+
+To register the middleware, add the following line to the app/Http/Kernel.php
+
+    'mrtoken' => \Hackage\MrToken\Middleware\MrTokenMiddleware::class
