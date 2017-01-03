@@ -19,3 +19,12 @@ file in the provider section.
 To register the middleware, add the following line to the app/Http/Kernel.php
 
     'mrtoken' => \Hackage\MrToken\Middleware\MrTokenMiddleware::class
+
+Be sure to add the trait and interface to the user model
+
+    Hackage\MrToken\Traits\MrTokenTrait;
+    Hackage\MrToken\Interfaces\MrTokenInterface;
+
+To publish the default config file
+
+    php artisan vendor:publish --provider="Hackage\MrToken\MrTokenServiceProvider"
