@@ -9,11 +9,11 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.2.*|5.3.*|5.4.*",
+        "illuminate/support": ">=5.2.*",
         "webpatser/laravel-uuid": "^2.0"
     },
     "require-dev": {
-        "laravel/framework": "5.2.*|5.3.*|5.4.*"
+        "laravel/framework": ">=5.2.*"
     },
     "autoload": {
         "psr-4": {
