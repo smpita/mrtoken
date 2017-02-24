@@ -28,3 +28,22 @@ Be sure to add the trait and interface to the user model
 To publish the default config file
 
     php artisan vendor:publish --provider="Hackage\MrToken\MrTokenServiceProvider"
+
+You must define the following methods in your user model
+
+    /**
+     * The name of the model column to uniquely ID the user.
+     * @return string
+     */
+    public function getMrTokenKeyColumn()
+    {
+        return 'id';
+    }
+    /**
+     * The name of the model column that stores the token's salt.
+     * @return string
+     */
+    public function getMrTokenSaltColumn()
+    {
+        return 'api_token';
+    }
