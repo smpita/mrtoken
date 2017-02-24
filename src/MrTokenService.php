@@ -17,6 +17,11 @@ class MrTokenService
     protected $user = null;
     protected $token = null;
 
+    /**
+     * Generate a new token for a user.
+     * @param  MrTokenInterface $user User model
+     * @return mixed string|boolean
+     */
     public function generate(MrTokenInterface $user = null)
     {
         $this->_bootstrap($user);
@@ -40,7 +45,11 @@ class MrTokenService
         }
         return false;
     }
-
+    /**
+     * Resolve an object from a login token.
+     * @param  string $token
+     * @return mixed object|boolean
+     */
     public function resolve($token = null)
     {
         $this->_bootstrap($token);
@@ -73,11 +82,11 @@ class MrTokenService
         }
         return false;
     }
-    private function _expTimeStamp()
+    protected function _expTimeStamp()
     {
         return strToTime('+'.config('mrtoken.TOKEN_LIFE_SPAN', 24).' '.config('mrtoken.TIME_UNITS', 'hours'));
     }
-    private function _makeChecksum($key, $expires, $salt)
+    protected function _makeChecksum($key, $expires, $salt)
     {
         return serialize([
             'k' => $key,
@@ -85,11 +94,11 @@ class MrTokenService
             's' => $salt,
         ]);
     }
-    private function _isExpired($timestamp)
+    protected function _isExpired($timestamp)
     {
         return time() > $timestamp;
     }
-    private function _bootstrap($data = null)
+    protected function _bootstrap($data = null)
     {
         if(!is_null($data))
         {
