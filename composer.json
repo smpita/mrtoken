@@ -1,6 +1,6 @@
 {
     "name": "hipstercreative/mrtoken",
-    "description": "Carves up cookies for AWS Cloudfront private resources",
+    "description": "Creates meaningful tokens for API authentication.",
     "authors": [
         {
             "name": "Sean Pearce",
@@ -9,11 +9,11 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": ">=5.2.*",
+        "illuminate/support": ">=5.2.0",
         "webpatser/laravel-uuid": "^2.0"
     },
     "require-dev": {
-        "laravel/framework": ">=5.2.*"
+        "laravel/framework": ">=5.2.0"
     },
     "autoload": {
         "psr-4": {
