@@ -2,6 +2,8 @@
 
 namespace Hackage\MrToken\Traits;
 
+use Hackage\MrToken\MrTokenService;
+
 trait MrTokenTrait
 {
     /**
@@ -13,7 +15,7 @@ trait MrTokenTrait
         $tokenUserModel = config('mrtoken.USER_MODEL', 'App\User');
         if($this instanceof $tokenUserModel)
         {
-            return MrToken::generate($this);
+            return (new MrTokenService)->generate($this);
         }
         return false;
     }
@@ -27,7 +29,7 @@ trait MrTokenTrait
         $tokenUserModel = config('mrtoken.USER_MODEL', 'App\User');
         if($this instanceof $tokenUserModel)
         {
-            return MrToken::regenerate($this);
+            return (new MrTokenService)->regenerate($this);
         }
         return false;
     }
