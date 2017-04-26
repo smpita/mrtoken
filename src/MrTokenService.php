@@ -14,6 +14,7 @@ class MrTokenService
     protected $userModel = '';
     protected $keyColumn = '';
     protected $saltColumn = '';
+    protected $expiresColumn = '';
     protected $user = null;
     protected $token = null;
 
@@ -31,20 +32,39 @@ class MrTokenService
             $expires = $this->_expTimeStamp();
             $salt = Uuid::generate(4)->string;
 
-            $checksum = $this->_makeChecksum($key, $expires, $salt);
-            $digest = Hash::make($checksum);
-            $map = [
-                'k' => $key,
-                'e' => $expires,
-                'd' => $digest,
-            ];
-            $token = Crypt::encrypt($map);
-            $this->user->{$this->saltColumn} = $salt;
-            $this->user->save();
+            $token = $this->_createToken($key, $expires, $salt);
+
+            $this->user->fillable([$this->saltColumn, $this->expiresColumn])->update([
+                $this->saltColumn => $salt,
+                $this->expiresColumn => $expires,
+            ]);
             return $token;
         }
         return false;
     }
+
+    /**
+     * Regenerate the last token for the user.
+     * @param  MrTokenInterface $user User model
+     * @return mixed string|boolean
+     */
+    public function regenerate(MrTokenInterface $user = null)
+    {
+        $this->_bootstrap($user);
+        if(!is_null($this->user))
+        {
+            $key = $this->user->{$this->keyColumn};
+            $expires = $this->user->{$this->expiresColumn};
+            $salt = $this->user->{$this->saltColumn};
+
+            $token = is_null($salt) || is_null($expires)
+                ? false
+                : $this->_createToken($key, $expires, $salt);
+            return $token;
+        }
+        return false;
+    }
+
     /**
      * Resolve an object from a login token.
      * @param  string $token
@@ -82,10 +102,24 @@ class MrTokenService
         }
         return false;
     }
+
+    protected function _createToken($key, $expires, $salt)
+    {
+        $checksum = $this->_makeChecksum($key, $expires, $salt);
+        $digest = Hash::make($checksum);
+        $map = [
+            'k' => $key,
+            'e' => $expires,
+            'd' => $digest,
+        ];
+        return Crypt::encrypt($map);
+    }
+
     protected function _expTimeStamp()
     {
         return strToTime('+'.config('mrtoken.TOKEN_LIFE_SPAN', 24).' '.config('mrtoken.TIME_UNITS', 'hours'));
     }
+
     protected function _makeChecksum($key, $expires, $salt)
     {
         return serialize([
@@ -94,10 +128,12 @@ class MrTokenService
             's' => $salt,
         ]);
     }
+
     protected function _isExpired($timestamp)
     {
         return time() > $timestamp;
     }
+
     protected function _bootstrap($data = null)
     {
         if(!is_null($data))
@@ -107,6 +143,7 @@ class MrTokenService
                 $this->user = $data;
                 $this->keyColumn = $this->user->getMrTokenKeyColumn();
                 $this->saltColumn = $this->user->getMrTokenSaltColumn();
+                $this->expiresColumn = $this->user->getMrTokenExpiresColumn();
             }
             else
             {
@@ -115,6 +152,7 @@ class MrTokenService
                 $userModel = new $this->userModel;
                 $this->keyColumn = $userModel->getMrTokenKeyColumn();
                 $this->saltColumn = $userModel->getMrTokenSaltColumn();
+                $this->expiresColumn = $userModel->getMrTokenExpiresColumn();
             }
             return true;
         }

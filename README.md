@@ -33,17 +33,30 @@ You must define the following methods in your user model
 
     /**
      * The name of the model column to uniquely ID the user.
+     *
      * @return string
      */
     public function getMrTokenKeyColumn()
     {
         return 'id';
     }
+
     /**
      * The name of the model column that stores the token's salt.
+     *
      * @return string
      */
     public function getMrTokenSaltColumn()
     {
         return 'api_token';
+    }
+
+    /**
+     * The name of the model's integer column that stores the token's epoch expiration.
+     *
+     * @return string
+     */
+    public function getMrTokenExpiresColumn()
+    {
+        return 'token_expires_at';
     }

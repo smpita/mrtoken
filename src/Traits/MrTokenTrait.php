@@ -17,4 +17,21 @@ trait MrTokenTrait
         }
         return false;
     }
+
+    /**
+     * Regenerate the last token for the user.
+     * @return mixed string|boolean
+     */
+    public function lastApiToken()
+    {
+        $tokenUserModel = config('mrtoken.USER_MODEL', 'App\User');
+        if($this instanceof $tokenUserModel)
+        {
+            return MrToken::regenerate($this);
+        }
+        return false;
+    }
+
+
+
 }
